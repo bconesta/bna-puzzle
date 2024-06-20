@@ -1,4 +1,5 @@
 # Bienvenido al repositorio de Puzzle para BNA
+#
 
 ## Sobre el proyecto
 Puzzle es un juego desarrollado por primera vez, este consiste en un clasico rompecabezas con cantidad de fichas a elegir. En este caso, se realizará una adaptación a pedido de la marca BNA, incluyendo su logo, fuente y demas solicitudes. 
