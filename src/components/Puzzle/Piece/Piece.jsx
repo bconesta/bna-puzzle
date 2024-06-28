@@ -7,7 +7,11 @@ import { useEffect, useRef } from 'react';
 function Piece({ 
     img = '/assets/img/golden.jpg', 
     puzzleSize = [3, 3], 
-    i=2, j=0 
+    i=2, j=0,
+    onGrab = () => {},
+    onDrop = () => {},
+    onDrag = () => {},
+    style
 }){
     //[top, right, bottom, left]
     const holes = [
@@ -170,7 +174,17 @@ function Piece({
 
     return (
         <>
-        <canvas ref={canvasRef} width={settings.width} height={settings.height}></canvas>
+        <canvas 
+            ref={canvasRef} 
+            width={settings.width} 
+            height={settings.height} 
+            onMouseDown={onGrab} 
+            onTouchStart={onGrab}
+            onMouseUp={onDrop}
+            onTouchEnd={onDrop}
+            onTouchMove={onDrag}
+            style={style}
+        />
         <img src={img} alt="nope" ref={imgRef} onLoad={handleLoad} style={{display: 'none'}}/>
         </>
     )

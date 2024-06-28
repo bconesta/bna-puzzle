@@ -7,7 +7,6 @@
     height: 100vh;
     background-color: #282c34;
     color: white;
-    canvas{
-        width: 80%;
-    }
+    position: relative;
+    overflow: hidden;
 }
