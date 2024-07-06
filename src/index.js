@@ -10,7 +10,7 @@ import End from './app/End/End';
 
 const router = createBrowserRouter([
   { path: '/', element: <Home />},
-  { path: '/game/:category', element: <Game />},
+  { path: '/game', element: <Game />},
   { path: '/end/:points', element: <End />},
   { path: '*', element: '404'},
 ])
@@ -24,3 +24,12 @@ root.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.unregister();
+
+export const randomize = (n) => {
+  const rand = [];
+  while(rand.length < n){
+    const num = Math.floor(Math.random()*n);
+    if(!rand.includes(num)) rand.push(num);
+  }
+  return rand;
+}
