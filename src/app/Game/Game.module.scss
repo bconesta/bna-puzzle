@@ -5,9 +5,24 @@
     justify-content: center;
     max-width: 1080px;
     margin: 0 auto;
-    height: 100vh;
+    height: 100dvh;
     background-color: #282c34;
     color: white;
     position: relative;
     overflow: hidden;
+    header{
+        display: flex;
+        justify-content: space-between;
+        width: 80%;
+        margin-bottom: 50px;
+        div{
+            padding: 20px 60px;
+            background-color: red;
+            border-radius: 20px;
+        }
+    }
+    .table{
+        display: grid;
+        width: 80%;
+    }
 }

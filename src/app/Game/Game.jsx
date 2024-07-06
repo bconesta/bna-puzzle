@@ -2,28 +2,29 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import Piece from '../../components/Puzzle/Piece/Piece';
 import styles from './Game.module.scss';
 import Board from '../../components/Puzzle/Board/Board';
+import { randomize } from '../../index';
 
 function piecesReducer(state, action){
   switch(action.type){
     case 'set-pieces-size':
       return state.map(piece => (
         {
-          ...piece, 
-          oX: piece.j*action.oSize,
-          oY: piece.i*action.oSize,
+          ...piece,
           x: piece.j*action.size,
           y: piece.i*action.size,
-          oSize: action.oSize,
           size: action.size,
-          tX: action.bX * piece.j,
-          tY: action.bY * piece.i
+          tX: action.size * piece.j * 0.601 + action.bX,
+          tY: action.size * piece.i * 0.601 + action.bY
         }
       ));
     case 'grabbed':
+      const grabbed = piece => (piece.i === action.i && piece.j === action.j && !piece.onTarget);
       return state.map(piece => (
         {
           ...piece, 
-          dragging: piece.i === action.i && piece.j === action.j
+          dragging: grabbed(piece),
+          x: grabbed(piece) ? action.x : piece.x,
+          y: grabbed(piece) ? action.y : piece.y
         }
       ));
     case 'dragging':
@@ -41,9 +42,9 @@ function piecesReducer(state, action){
         {
           ...piece, 
           dragging: false,
-          x: isOnTarget(piece) ? piece.tX : piece.oX,
-          y: isOnTarget(piece) ? piece.tY : piece.oY,
-          onTarget: isOnTarget(piece)
+          x: isOnTarget(piece) && piece.dragging || piece.onTarget ? piece.tX - piece.size*0.199 : piece.oX,
+          y: isOnTarget(piece) && piece.dragging || piece.onTarget ? piece.tY - piece.size*0.199 : piece.oY,
+          onTarget: isOnTarget(piece) && piece.dragging || piece.onTarget
         }
       ));
   }
@@ -56,26 +57,31 @@ function Game() {
   const pageRef = useRef(null);
   const [screen, setScreen] = useState({width: window.innerWidth, height: window.innerHeight, xOff: 0, yOff: 0});
   const [boardStyle, setBoardStyle] = useState({});
+  const [time, setTime] = useState(0);
+  const random = randomize(length);
   const [pieces, dispatch] = useReducer(piecesReducer, Array.from({ length }, (v, n) => {
     const i = Math.floor(n/puzzleSize[1]);
     const j = n - i*puzzleSize[1];
-    const oSize = (window.innerWidth*1)/puzzleSize[1];
+    const iR = Math.floor(random[n]/puzzleSize[1]);
+    const jR = random[n] - iR*puzzleSize[1];
     return {
-      i, j,
+      i, j, iR, jR,
       onTarget: false,
       dragging: false,
-      oSize,
       size: (window.innerWidth*0.9)/puzzleSize[1],
-      x: (oSize-50)*j, y: (oSize-50)*i,
-      oX: oSize*j, oY: oSize*i,
+      x: 0, y: 0,
       tX: 0, tY: 0
     }
   }));
   //END HOOKS
   //FUNCTIONS
   const onGrab = (e, i, j) => {
+    const { xOff, yOff } = screen;
     if(e.type !== 'touchstart') e.preventDefault();
-    dispatch({type: 'grabbed', i, j});
+    dispatch({ type: 'grabbed', i, j,
+      x: (e.clientX || e.touches?.[0].clientX) - (pieces[0]?.size/2) - xOff, 
+      y: (e.clientY || e.touches?.[0].clientY) - (pieces[0]?.size/2) - yOff
+    });
   }
   const onDrag = (e) => {
     const { xOff, yOff } = screen;
@@ -100,16 +106,18 @@ function Game() {
       const container = pageRef.current.getBoundingClientRect();
       setScreen({width: container.width, height: container.height, xOff: container.x, yOff: container.y});
     }
+    const interval = setInterval(()=>setTime(time=>time+1),1000);
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearInterval(interval);
+    }
   }, [])
 
   useEffect(()=>{
     const { xOff, yOff } = screen;
-    console.log(boardStyle.y)
     dispatch({
-      type: 'set-pieces-size', 
-      oSize: (screen.width)/puzzleSize[1], 
+      type: 'set-pieces-size',
       size: (boardStyle.style?.height/puzzleSize[0])/0.6025,
       bX: boardStyle.x - xOff,
       bY: boardStyle.y - yOff    
@@ -117,34 +125,44 @@ function Game() {
   }, [boardStyle])
 
   useEffect(()=>{
-    const piece = pieces.find(piece => piece.dragging)
-    if(piece) console.log(piece.y);
-  }, [pieces])
+    if(!pieces.some(piece=>!piece.onTarget)){
+      //WIN
+      console.log("WIN");
+    }
+  },[pieces])
 
   return (
     <div ref={pageRef} className={styles.Page} onMouseMove={onDrag}>
-      <h1>Game</h1>
-      {
-        pieces.map(piece => (
-          <Piece
-            puzzleSize={puzzleSize}
-            key={`${piece.j}${piece.i}`} i={piece.i} j={piece.j} 
-            onGrab={(e)=>onGrab(e, piece.i, piece.j)} 
-            onDrop={(e)=>onDrop(e, piece.i, piece.j)}
-            onDrag={onDrag}
-            style={{
-              position: 'absolute', 
-              left: piece?.x || 0, 
-              top: piece?.y || 0,
-              width: piece?.dragging ? piece?.size : piece?.oSize,
-              height: piece?.dragging ? piece?.size : piece?.oSize,
-              cursor: piece.dragging ? 'grabbing' : 'grab',
-              zIndex: piece.dragging ? 10 : 1
-            }}
-          />
-        ))
-      }
+      <header>
+        <div>Logo</div>
+        <div>{`${time}s`}</div>
+      </header>
       <Board size={puzzleSize} scrsize={screen} boardStyle={boardStyle} setBoardStyle={setBoardStyle} />
+      <div className={styles.table} style={{...boardStyle.style, width: boardStyle.style?.height}}>
+        {
+          pieces.map(piece => (
+            <Piece
+              puzzleSize={puzzleSize}
+              key={`${piece.j}${piece.i}`} i={piece.i} j={piece.j} 
+              onGrab={(e)=>onGrab(e, piece.i, piece.j)} 
+              onDrop={(e)=>onDrop(e, piece.i, piece.j)}
+              onDrag={onDrag}
+              style={{
+                position: piece.dragging || piece.onTarget ? 'absolute' : 'unset', 
+                left: piece?.x || 0, 
+                top: piece?.y || 0,
+                width: piece?.dragging || piece?.onTarget ? piece?.size : '100%',
+                height: piece?.dragging || piece?.onTarget ? piece?.size : '100%',
+                cursor: piece.dragging ? 'grabbing' : 'grab',
+                zIndex: piece.dragging ? 10 : (piece.onTarget ? 1 : 2),
+                gridRow: piece.iR+1,
+                gridColumn: piece.jR+1
+              }}
+            />
+          ))
+        }
+      </div>
+      
     </div>
   )
 }

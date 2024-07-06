@@ -8,7 +8,9 @@ function Board({ size=[3,3], scrsize={}, setBoardStyle, boardStyle}) {
 
   useEffect(()=>{
     const boardWidth = boardRef.current.offsetWidth;
+    //TO DO: Check update property. For some reason 'y' property starts on bad range
     setBoardStyle({
+      update : !boardStyle.update ? 1 : 2, 
       style : {
         height: (boardWidth/size[1])*size[0],
         gridTemplateColumns: `repeat(${size[1]}, 1fr)`,
@@ -17,8 +19,7 @@ function Board({ size=[3,3], scrsize={}, setBoardStyle, boardStyle}) {
       x : boardRef.current.getBoundingClientRect().x,
       y : boardRef.current.getBoundingClientRect().y
     })
-
-  }, [scrsize])
+  }, [scrsize, boardStyle?.update])
 
   return (
     <div className={styles.border}>
