@@ -1,0 +1,75 @@
+$BNAlightBlue: #23abe0;
+
+.end{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    //justify-content: center;
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 100dvh;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    header{
+        display: flex;
+        justify-content: center;
+        width: 75%;
+        margin: 70px 0 50px;
+        div{
+            &.logo{
+                background-color: transparent;
+                padding: 0;
+                width: 20%;
+                img{
+                    width: 100%
+                }
+            }
+            &.clock{
+                width: 160px;
+                background-color: $BNAlightBlue;
+                border-radius: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                img{
+                    width: 30px;
+                    margin-right: 10px;
+                }
+                span{
+                    font-size: 2rem;
+                }
+            }
+        }
+    }
+    .board{
+        width: 75%;
+        margin: 0 auto;
+        border: 15px solid $BNAlightBlue;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        img{
+            height: 100%;
+        }
+    }
+    .border{
+        border: 15px solid $BNAlightBlue;
+        width: 75%;
+        margin: 0 auto;
+        .board{
+            background-color: black;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 1px;
+            width: 100%;
+            div{
+                height: 100%;
+                width: 100%;
+                background-color: #c0edff;
+            }
+        }
+    }
+}

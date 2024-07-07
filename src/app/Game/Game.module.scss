@@ -1,13 +1,50 @@
+$BNAblue: #005e85;
+$BNAlightBlue: #23abe0;
+
 .Page{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100vh;
-    background-color: #282c34;
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 100dvh;
     color: white;
-    canvas{
-        width: 80%;
+    position: relative;
+    overflow: hidden;
+    header{
+        display: flex;
+        justify-content: space-between;
+        width: 75%;
+        margin-bottom: 50px;
+        div{
+            &.logo{
+                background-color: transparent;
+                padding: 0;
+                width: 20%;
+                img{
+                    width: 100%
+                }
+            }
+            &.clock{
+                width: 160px;
+                background-color: $BNAlightBlue;
+                border-radius: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                img{
+                    width: 30px;
+                    margin-right: 10px;
+                }
+                span{
+                    font-size: 2rem;
+                }
+            }
+        }
+    }
+    .table{
+        display: grid;
+        width: 75%;
     }
 }

@@ -10,8 +10,8 @@ import End from './app/End/End';
 
 const router = createBrowserRouter([
   { path: '/', element: <Home />},
-  { path: '/game/:category', element: <Game />},
-  { path: '/end/:points', element: <End />},
+  { path: '/game/:img', element: <Game />},
+  { path: '/end/:img/:points', element: <End />},
   { path: '*', element: '404'},
 ])
 

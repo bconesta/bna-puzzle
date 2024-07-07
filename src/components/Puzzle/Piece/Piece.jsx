@@ -1,11 +1,18 @@
+/* TO DO: 
+    -Solve the shape of the bottom line of the piece; When the bottom line is an inner hole, the shape is drawn correctly, but the clipping is not working properly, causing the image to be drawn outside the piece. Meanwhile, given the fact that an outer hole is well drawn, the pattern of the puzzle will be an fixed outer hole in the bottom line.
+*/
+
 import { useEffect, useRef } from 'react';
 
-function Piece() {
-    const puzzleSize = [5, 5];
-    const [i, j] = [1, 3];
-
-    
-
+function Piece({ 
+    img = '/assets/img/golden.jpg', 
+    puzzleSize = [3, 3], 
+    i=2, j=0,
+    onGrab = () => {},
+    onDrop = () => {},
+    onDrag = () => {},
+    style
+}){
     //[top, right, bottom, left]
     const holes = [
         i !== 0,
@@ -14,38 +21,57 @@ function Piece() {
         j !== 0
     ];
     const inner = [
-        i % 2 === j % 2,
+        true,
         i % 2 !== j % 2,
-        i % 2 === j % 2,
+        false,
         i % 2 !== j % 2
     ];
 
     const size = 1000;
-    const radius = 150;
-    const offset = 120;
-    const outlineWidth = 5;
+    const radius = 170;
+    const offset = 140;
+    const outlineWidth = 20;
+    const width = size + 2*(radius+offset+outlineWidth);
+    const height = size + 2*(radius+offset+outlineWidth);
+    const xOffset = Math.sqrt(Math.pow(radius, 2) - Math.pow(offset, 2));
+    const linesWidth = (size / 2) - xOffset;
+    const xOrigin = (width-size)/2;
+    const yOrigin = (height-size)/2;
 
-    const width = size+2*(radius+offset+outlineWidth);
-    const height = size+2*(radius+offset+outlineWidth);
+    const settings = {
+        size,
+        radius,
+        offset,
+        outlineWidth,
+        width,
+        height,
+        xOffset,
+        linesWidth,
+        xOrigin,
+        yOrigin
+    }
+
+    //const sizes = {
+
 
     const canvasRef = useRef(null);
+    const imgRef = useRef(null);
 
-    useEffect(() => {
-        const xOffset = Math.sqrt(Math.pow(radius, 2) - Math.pow(offset, 2));
-        const linesWidth = (size / 2) - xOffset;
-        const xOrigin = (width-size)/2;
-        const yOrigin = (height-size)/2;
-        
+    const drawOutline = (ctx, settings, holes, inner) => {
+        const {
+            size, 
+            radius, 
+            offset, 
+            outlineWidth, 
+            width, 
+            height,
+            xOffset,
+            linesWidth,
+            xOrigin,
+            yOrigin
+        } = settings;
 
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = outlineWidth;
-
-
-        ctx.beginPath();
         ctx.moveTo(0,0);
-        ctx.clearRect(0, 0, width, height);
         //TOP LINE
         ctx.moveTo(xOrigin, yOrigin);
         ctx.lineTo(linesWidth + xOrigin, yOrigin);
@@ -87,14 +113,80 @@ function Piece() {
             ctx.lineTo(xOrigin, yOrigin);
         ctx.moveTo(xOrigin, yOrigin);
         ctx.lineTo(xOrigin, yOrigin + linesWidth);
-        
-        ctx.closePath();
+
+    }
+    const drawPiece = (ctx, settings, holes, inner) => {
+        const {
+            size,
+            outlineWidth, 
+            width, 
+            height,
+            xOrigin,
+            yOrigin,
+            imgWidth,
+            imgHeight
+        } = settings;
+
+        const aspRatio = imgWidth/imgHeight;
+        const [n, m] = puzzleSize;
+
+        const xImgOffset = aspRatio > m/n ? 0.5*size*(aspRatio*n - m) : 0;
+        const yImgOffset = aspRatio < m/n ? 0.5*size*((m/aspRatio) - n) : 0;
+
+        ctx.beginPath();
+
+        drawOutline(ctx, settings, holes, inner);
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = outlineWidth;
         ctx.stroke();
+        ctx.rect(xOrigin, yOrigin, size, size);
+        
+        ctx.clip();
+
+
+
+        ctx.drawImage(imgRef.current, xOrigin - j*size, yOrigin - i*size, size*m + xImgOffset, size*n + yImgOffset);     
+
+    }
+
+
+    const handleLoad = (e) => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+
+        const newSettings = {
+            ...settings,
+            imgWidth: e.target.width,
+            imgHeight: e.target.height
+        }
+
+        drawPiece(ctx, newSettings, holes, inner);
+    }
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        
+        drawOutline(ctx, settings, holes, inner);
+
 
     }, []);
 
     return (
-        <canvas ref={canvasRef} width={width} height={height}></canvas>
+        <>
+        <canvas 
+            ref={canvasRef} 
+            width={settings.width} 
+            height={settings.height} 
+            onMouseDown={onGrab} 
+            onTouchStart={onGrab}
+            onMouseUp={onDrop}
+            onTouchEnd={onDrop}
+            onTouchMove={onDrag}
+            style={style}
+        />
+        <img src={img} alt="nope" ref={imgRef} onLoad={handleLoad} style={{display: 'none'}}/>
+        </>
     )
 }
 
