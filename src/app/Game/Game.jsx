@@ -2,7 +2,8 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import Piece from '../../components/Puzzle/Piece/Piece';
 import styles from './Game.module.scss';
 import Board from '../../components/Puzzle/Board/Board';
-import { randomize } from '../../index';
+import { randomize } from '../../utils/randomize';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function piecesReducer(state, action){
   switch(action.type){
@@ -54,6 +55,8 @@ function Game() {
   const puzzleSize = [3, 3];
   const length = puzzleSize[0]*puzzleSize[1];
   //HOOKS
+  const { img } = useParams();
+  const navigate = useNavigate();
   const pageRef = useRef(null);
   const [screen, setScreen] = useState({width: window.innerWidth, height: window.innerHeight, xOff: 0, yOff: 0});
   const [boardStyle, setBoardStyle] = useState({});
@@ -127,21 +130,27 @@ function Game() {
   useEffect(()=>{
     if(!pieces.some(piece=>!piece.onTarget)){
       //WIN
-      console.log("WIN");
+      navigate(`/end/${img}/${time}`)
     }
   },[pieces])
 
   return (
     <div ref={pageRef} className={styles.Page} onMouseMove={onDrag}>
       <header>
-        <div>Logo</div>
-        <div>{`${time}s`}</div>
+        <div className={styles.logo}>
+          <img src='/assets/img/logo/logo.png' alt='BNA logo' />
+        </div>
+        <div className={styles.clock}>
+          <img src='/assets/img/clock.svg' alt='clock' />
+          <span>{`${time}s`}</span>
+        </div>
       </header>
       <Board size={puzzleSize} scrsize={screen} boardStyle={boardStyle} setBoardStyle={setBoardStyle} />
       <div className={styles.table} style={{...boardStyle.style, width: boardStyle.style?.height}}>
         {
           pieces.map(piece => (
             <Piece
+              img={`/assets/img/puzzle/${img.replace('+', '.')}`}
               puzzleSize={puzzleSize}
               key={`${piece.j}${piece.i}`} i={piece.i} j={piece.j} 
               onGrab={(e)=>onGrab(e, piece.i, piece.j)} 
@@ -153,7 +162,7 @@ function Game() {
                 top: piece?.y || 0,
                 width: piece?.dragging || piece?.onTarget ? piece?.size : '100%',
                 height: piece?.dragging || piece?.onTarget ? piece?.size : '100%',
-                cursor: piece.dragging ? 'grabbing' : 'grab',
+                cursor: piece.onTarget ? 'default' : piece.dragging ? 'grabbing' : 'grab',
                 zIndex: piece.dragging ? 10 : (piece.onTarget ? 1 : 2),
                 gridRow: piece.iR+1,
                 gridColumn: piece.jR+1

@@ -1,6 +1,9 @@
+$BNAblue: #005e85;
+$BNAlightBlue: #23abe0;
+
 .border{
-    border: 15px solid brown;
-    width: 80%;
+    border: 15px solid $BNAlightBlue;
+    width: 75%;
     margin: 0 auto;
     .board{
         background-color: black;
@@ -12,7 +15,7 @@
         div{
             height: 100%;
             width: 100%;
-            background-color: #7c7c7c;
+            background-color: #c0edff;
         }
     }
 }
