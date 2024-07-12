@@ -60,7 +60,7 @@ function Game() {
   const pageRef = useRef(null);
   const [screen, setScreen] = useState({width: window.innerWidth, height: window.innerHeight, xOff: 0, yOff: 0});
   const [boardStyle, setBoardStyle] = useState({});
-  const [time, setTime] = useState(60);
+  const [time, setTime] = useState(80);
   const random = randomize(length);
   const [pieces, dispatch] = useReducer(piecesReducer, Array.from({ length }, (v, n) => {
     const i = Math.floor(n/puzzleSize[1]);
