@@ -129,8 +129,8 @@ function Game() {
 
   //WIN/LOSE CONDITIONS
   useEffect(()=>{
-    if(time === 0) navigate(`/end/lose`);
-    else if(!pieces.some(piece=>!piece.onTarget)) navigate(`/end/win`);
+    /*if(time === 0) navigate(`/end/lose`);
+    else*/ if(!pieces.some(piece=>!piece.onTarget)) navigate(`/end/win`);
   },[pieces, time])
 
   return (
