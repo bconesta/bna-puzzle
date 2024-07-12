@@ -17,7 +17,7 @@ function Home() {
       </div>
       <div className="center">
         <h1>¡Bienvenido!</h1>
-        <p>¿Podrás armar el rompecabezas antes de que se acabe el tiempo?</p>
+        <p>Armá el rompecabezas antes de que se acabe el tiempo</p>
         <img src='/assets/img/home/image.png' className='image' />
       </div>
       <div className="button">
