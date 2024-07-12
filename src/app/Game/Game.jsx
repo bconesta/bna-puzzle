@@ -60,7 +60,7 @@ function Game() {
   const pageRef = useRef(null);
   const [screen, setScreen] = useState({width: window.innerWidth, height: window.innerHeight, xOff: 0, yOff: 0});
   const [boardStyle, setBoardStyle] = useState({});
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(60);
   const random = randomize(length);
   const [pieces, dispatch] = useReducer(piecesReducer, Array.from({ length }, (v, n) => {
     const i = Math.floor(n/puzzleSize[1]);
@@ -109,7 +109,7 @@ function Game() {
       const container = pageRef.current.getBoundingClientRect();
       setScreen({width: container.width, height: container.height, xOff: container.x, yOff: container.y});
     }
-    const interval = setInterval(()=>setTime(time=>time+1),1000);
+    const interval = setInterval(()=>setTime(time=>time-1),1000);
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -127,12 +127,11 @@ function Game() {
     });
   }, [boardStyle])
 
+  //WIN/LOSE CONDITIONS
   useEffect(()=>{
-    if(!pieces.some(piece=>!piece.onTarget)){
-      //WIN
-      navigate(`/end/${img}/${time}`)
-    }
-  },[pieces])
+    /*if(time === 0) navigate(`/end/lose`);
+    else */if(!pieces.some(piece=>!piece.onTarget)) navigate(`/end/win`);
+  },[pieces, time])
 
   return (
     <div ref={pageRef} className={styles.Page} onMouseMove={onDrag}>
@@ -145,33 +144,43 @@ function Game() {
           <span>{`${time}s`}</span>
         </div>
       </header>
-      <Board size={puzzleSize} scrsize={screen} boardStyle={boardStyle} setBoardStyle={setBoardStyle} />
-      <div className={styles.table} style={{...boardStyle.style, width: boardStyle.style?.height}}>
-        {
-          pieces.map(piece => (
-            <Piece
-              img={`/assets/img/puzzle/${img.replace('+', '.')}`}
-              puzzleSize={puzzleSize}
-              key={`${piece.j}${piece.i}`} i={piece.i} j={piece.j} 
-              onGrab={(e)=>onGrab(e, piece.i, piece.j)} 
-              onDrop={(e)=>onDrop(e, piece.i, piece.j)}
-              onDrag={onDrag}
-              style={{
-                position: piece.dragging || piece.onTarget ? 'absolute' : 'unset', 
-                left: piece?.x || 0, 
-                top: piece?.y || 0,
-                width: piece?.dragging || piece?.onTarget ? piece?.size : '100%',
-                height: piece?.dragging || piece?.onTarget ? piece?.size : '100%',
-                cursor: piece.onTarget ? 'default' : piece.dragging ? 'grabbing' : 'grab',
-                zIndex: piece.dragging ? 10 : (piece.onTarget ? 1 : 2),
-                gridRow: piece.iR+1,
-                gridColumn: piece.jR+1
-              }}
-            />
-          ))
-        }
+      <h2>Armá el rompecabezas antes que se acabe el tiempo</h2>
+      <Board 
+        size={puzzleSize} scrsize={screen} 
+        boardStyle={boardStyle} setBoardStyle={setBoardStyle} 
+        img={`/assets/img/puzzle/${img.replace('+', '.')}`} 
+      />      
+      <div className={styles.table} style={{...boardStyle.style}}>
+      {
+        Array.from({ length: puzzleSize[0] }, (v, i) => {
+              return <div key={`i${i}`} className={styles.row}>
+                {
+                  Array.from({ length: puzzleSize[1] }, (v, j) => {
+                    const piece = pieces.find(piece => piece.iR === i && piece.jR === j);
+                    return <Piece
+                      img={`/assets/img/puzzle/${img.replace('+', '.')}`}
+                      puzzleSize={puzzleSize}
+                      key={`${piece.j}${piece.i}`} i={piece.i} j={piece.j} 
+                      onGrab={(e)=>onGrab(e, piece.i, piece.j)} 
+                      onDrop={(e)=>onDrop(e, piece.i, piece.j)}
+                      onDrag={onDrag}
+                      style={{
+                        position: piece.dragging || piece.onTarget ? 'absolute' : 'unset', 
+                        left: piece?.x || 0, 
+                        top: piece?.y || 0,
+                        width: piece?.dragging || piece?.onTarget ? piece?.size : '100%',
+                        height: piece?.dragging || piece?.onTarget ? piece?.size : '100%',
+                        cursor: piece.onTarget ? 'default' : piece.dragging ? 'grabbing' : 'grab',
+                        zIndex: piece.dragging ? 10 : (piece.onTarget ? 1 : 2),
+                        gridColumn: piece.jR+1,
+                      }}
+                    />
+                    })
+                }
+              </div>
+          })
+      }
       </div>
-      
     </div>
   )
 }

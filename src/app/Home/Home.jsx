@@ -1,25 +1,30 @@
+import { useNavigate } from 'react-router-dom';
 import { randomize } from '../../utils/randomize';
-import { Link } from 'react-router-dom';
-import styles from './Home.module.scss';
+import './Home.scss'
 
 function Home() {
-  const imgs = ['cultivo+png', 'granja+png', 'tractor+png'];
 
+  const navigate = useNavigate();
 
+  const goToNextPage = () => {
+    const imgs = ['cultivo+webp', 'granja+webp', 'tractor+webp'];
+    navigate(`/game/${imgs[randomize(imgs.length)[0]]}`);
+  }
   return (
-    <div className={styles.home}>
-      <div className={styles.top}>
-        <img src='/assets/img/logo/logo.png' alt='BNA logo' />
+    <div className='home-page'>
+      <div className="header">
+        <img src='/assets/img/logo/logo.png' />
       </div>
-      <div className={styles.text}>
-        <h1>¡Vamos a jugar!</h1>
-        <h2>Completa el rompecabezas y gana :D</h2>
+      <div className="center">
+        <h1>¡Bienvenido!</h1>
+        <p>¿Podrás armar el rompecabezas antes de que se acabe el tiempo?</p>
+        <img src='/assets/img/home/image.png' className='image' />
       </div>
-      <div className={styles.bottom}>
-        <Link to={`/game/${imgs[randomize(imgs.length)[0]]}`}>Jugar</Link>
+      <div className="button">
+        <button onClick={goToNextPage}>Jugar</button>
       </div>
     </div>
   )
 }
 
-export default Home;
+export default Home
