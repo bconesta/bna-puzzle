@@ -1,21 +1,18 @@
 $BNAblue: #005e85;
-$BNAlightBlue: #23abe0;
+$BNAlightBlue: #018EDD;
 
 .border{
+    border-radius: 10px;
     border: 15px solid $BNAlightBlue;
-    width: 75%;
+    width: 85%;
     margin: 0 auto;
     .board{
-        background-color: black;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(4, 1fr);
-        gap: 1px;
         width: 100%;
-        div{
+        position: relative;
+        overflow: hidden;
+        img{
             height: 100%;
-            width: 100%;
-            background-color: #c0edff;
+            opacity: 0.25;
         }
     }
 }

@@ -1,50 +1,81 @@
 $BNAblue: #005e85;
-$BNAlightBlue: #23abe0;
+$BNAlightBlue: #018EDD;
 
 .Page{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    //justify-content: center;
     max-width: 1080px;
     margin: 0 auto;
     height: 100dvh;
     color: white;
     position: relative;
     overflow: hidden;
+    background: url(../../../public/assets/img/fondo-juego.png) no-repeat center;
+    background-size: cover;
     header{
+        width: 100%;
+        margin-top: 2dvh;
+        margin-bottom: 3dvh;
         display: flex;
-        justify-content: space-between;
-        width: 75%;
-        margin-bottom: 50px;
+        justify-content: center;
+        position: relative;
         div{
             &.logo{
                 background-color: transparent;
                 padding: 0;
-                width: 20%;
+                width: fit-content;
                 img{
-                    width: 100%
+                    height: 5dvh;
                 }
             }
             &.clock{
-                width: 160px;
+                width: 25%;
+                height: 100%;
                 background-color: $BNAlightBlue;
-                border-radius: 60px;
+                border-top-left-radius: 20px;
+                border-bottom-left-radius: 20px;
                 display: flex;
                 align-items: center;
-                justify-content: center;
+                justify-content: space-between;
+                position: absolute;
+                right: 0;
                 img{
-                    width: 30px;
-                    margin-right: 10px;
+                    height: 55%;
+                    margin-left: 15%;
                 }
                 span{
-                    font-size: 2rem;
+                    font-weight: bold;
+                    font-size: 3rem;
+                    margin-right: 25%;
+                    margin-bottom: 3%;
                 }
             }
         }
     }
+    h2{
+        margin: -30px 0 20px;
+        width: 100%;
+        text-align: center;
+        font-size: 2rem;
+    }
     .table{
-        display: grid;
-        width: 75%;
+        margin-top: -60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 75% !important;
+        height: auto !important;
+        aspect-ratio: 1/1 !important;
+        overflow: hidden;
+        div{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 100%;
+            aspect-ratio: 3/1;
+            margin-bottom: -40px;
+        }
     }
 }
