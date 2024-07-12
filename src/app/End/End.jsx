@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import './End.scss'
 import Confetti from 'react-confetti'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 //import {useWindowSize} from '@react-hook/window-size'
 
 function End() {
@@ -9,10 +9,11 @@ function End() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
+  const navigate = useNavigate();
   const { status } = useParams();
 
   const goToNextPage = () => {
-    window.location.href = '/'
+    navigate('/')
   }
 
   useEffect(() => {

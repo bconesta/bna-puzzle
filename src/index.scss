@@ -1,4 +1,4 @@
-$BNAblue: #005e85;
+$BNAblue: #005381;
 $BNAlightBlue: #23abe0;
 
 body {
@@ -12,4 +12,13 @@ body {
   color: white;
   touch-action: none;
   user-select: none;
+}
+
+#root{
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
+  background-image: url('../public/assets/img/fondo-juego.png');
+  background-position: center;
+  background-size: cover;
 }
