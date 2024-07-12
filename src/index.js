@@ -15,6 +15,10 @@ const router = createBrowserRouter([
   { path: '*', element: '404'},
 ])
 
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener('selectstart', event => event.preventDefault());
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <RouterProvider router={router} />

@@ -10,4 +10,5 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: $BNAblue;
   color: white;
+  touch-action: none;
 }
