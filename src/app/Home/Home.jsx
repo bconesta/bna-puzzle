@@ -1,8 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { randomize } from '../../utils/randomize';
+import React, {useState} from 'react'
 import './Home.scss'
+import StatsViewer from '../../components/StatsViewer/StatsViewer';
+import SecretButton from '../../components/SecretButton/SecretButton';
 
 function Home() {
+  const [showStats, setShowStats] = useState(false);
 
   const navigate = useNavigate();
 
@@ -12,6 +16,10 @@ function Home() {
   }
   return (
     <div className='home-page'>
+      <div style={{position: 'absolute', top: 0, left: 0, width: '15vw', height: '15vw'}}>
+        <SecretButton whenClicked={() => setShowStats(true)} totalClicks={2}/>
+      </div>
+      {showStats && <StatsViewer whenClose={()=>{setShowStats(false)}} storageKey={'stats-puzzle-bna'}/>}
       <div className="header">
         <img src='/assets/img/logo/logo.png' />
       </div>

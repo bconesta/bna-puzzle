@@ -17,10 +17,34 @@ function End() {
   }
 
   useEffect(() => {
+    setDataToLocalStorage()
     setTimeout(() => {
       goToNextPage()
     }, 6000)
   }, [])
+
+    //El JSON de estadisticas se guarda en el localStorage con la siguiente estructura:
+// {
+//     "dia": cantidadDeVecesJugadas,
+//     "dia": cantidadDeVecesJugadas,
+//     ...
+// }
+
+const setDataToLocalStorage = () => {
+  const jsonData = localStorage.getItem('stats-puzzle-bna');
+  let estadisticas = {}
+  if (jsonData) {
+    estadisticas = JSON.parse(jsonData);
+  }
+  const date = new Date()
+  const dia = date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear()
+  if(estadisticas[dia]){
+    estadisticas[dia] += 1
+  } else {
+    estadisticas[dia] = 1
+  }
+  localStorage.setItem('stats-puzzle-bna', JSON.stringify(estadisticas));
+}
 
   return (
     <div className='end-page'>
