@@ -109,6 +109,7 @@ function Game() {
       const container = pageRef.current.getBoundingClientRect();
       setScreen({width: container.width, height: container.height, xOff: container.x, yOff: container.y});
     }
+    handleResize();
     const interval = setInterval(()=>setTime(time=>time-1),1000);
     window.addEventListener('resize', handleResize);
     return () => {
