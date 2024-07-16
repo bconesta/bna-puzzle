@@ -1,11 +1,21 @@
 {
-  "short_name": "BNA Puzzle",
-  "name": "BNA Puzzle",
+  "short_name": "Rompecabezas BNA",
+  "name": "Rompecabezas BNA",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "icon.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": ".",
