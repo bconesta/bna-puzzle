@@ -61,6 +61,18 @@ registerRoute(
   })
 );
 
+registerRoute(
+  ({ url }) => url.origin === self.location.origin && url.pathname.startsWith('/assets/'),
+  new CacheFirst({
+    cacheName: 'images',
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+      }),
+    ],
+  })
+);
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
